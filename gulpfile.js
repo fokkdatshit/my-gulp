@@ -10,12 +10,12 @@ const htmlMin = require('gulp-htmlmin');
 const sourcemaps = require('gulp-sourcemaps');
 
 function minifyhtml() {
-   return src('app/**/*.html')
+   return src('app/**/*.html') // указываем пути к файлам .html
       .pipe(htmlMin({
-         collapseWhitespace: true,
-         removeComments: true
+         collapseWhitespace: true, // удаляем все переносы
+         removeComments: true // удаляем все комментарии
       }))
-      .pipe(dest('dist'));
+      .pipe(dest('dist')); // оптимизированные файлы
 }
 
 
@@ -33,7 +33,7 @@ function cleanDist() {
 
 
 function images() {
-   return src('app/img/**/*')
+   return src('app/images/**/*')
       .pipe(imagemin([
          imagemin.gifsicle({ interlaced: true }),
          imagemin.mozjpeg({ quality: 75, progressive: true }),
@@ -45,12 +45,14 @@ function images() {
             ]
          })
       ]))
-      .pipe(dest('dist/img/'))
+      .pipe(dest('dist/images/'))
 }
 
 function scripts() {
    return src([
-      'node_modules/jquery/dist/jquery.min.js',
+      'node_modules/jquery/dist/jquery.js',
+      'app/js/slick.js',
+      'node_modules/wow.js/dist/wow.js',
       'app/js/main.js'
    ])
       .pipe(sourcemaps.init())
@@ -62,7 +64,10 @@ function scripts() {
 }
 
 function styles() {
-   return src('app/sass/style.sass')
+   return src([
+      'app/sass/style.sass',
+      'node_modules/animate.css/animate.css'
+   ])
       .pipe(sourcemaps.init())
       .pipe(sass({ outputStyle: 'compressed' }))
       .pipe(concat('style.min.css'))
@@ -79,15 +84,20 @@ function build() {
    return src([
       'app/css/style.min.css',
       'app/fonts/**/*',
-      'app/js/main.min.js'
+      'app/js/main.min.js',
+      'app/favicon/**/*'
    ], { base: 'app' })
       .pipe(dest('dist'))
 }
 
 function watching() {
-   watch(['app/sass/**/*.sass'], styles);
-   watch(['app/js/**/*.js', '!app/js/main.min.js'], scripts);
+   watch(['app/sass/*.sass', 'app/sass/blocks/*.sass'], { usePolling: true }, styles);
+   watch(['app/js/**/*.js', '!app/js/main.min.js'], { usePolling: true }, scripts);
    watch(['app/*.html']).on('change', browserSync.reload);
+
+   // watch(['app/sass/**/*.sass'], { usePolling: true }, styles);
+   // watch(['app/js/**/*.js', '!app/js/main.min.js'], { usePolling: true }, scripts);
+   // watch(['app/*.html']).on('change', browserSync.reload);
 }
 
 exports.styles = styles;

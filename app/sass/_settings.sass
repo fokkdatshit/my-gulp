@@ -22,6 +22,7 @@ blockquote,
 dl,
 dd
    margin: 0
+   padding: 0
 
 ul[class],
 ol[class]
@@ -31,7 +32,7 @@ a:not([class])
    text-decoration-skip-ink: auto
 
 img
-   max-width: 100%
+   // max-width: 100%
    display: block
 
 input,
@@ -40,18 +41,31 @@ textarea,
 select
    font: inherit
 
-@media (prefers-reduced-motion: reduce)
-   *
-      animation-duration: 0.01ms !important
-      animation-iteration-count: 1 !important
-      transition-duration: 0.01ms !important
-      scroll-behavior: auto !important
+/// Убрать стрелочки в Input type number [Firefox]
+
+input[type="number"]
+   -moz-appearance: textfield
+
+input[type="number"]:hover,
+input[type="number"]:focus
+   -moz-appearance: number-input
+
+///
+a
+   color: $text-color
+   display: inline-block
+   text-decoration: none
 
 body
-   font-family: 'Mulish', sans-serif
-   background-color: $secondary
+   font-family: 'Fira Sans', sans-serif
+   font-weight: 400
    color: $text-color
+   background-color: $bg-main-color
+   font-size: 16px
+   /// Скрыть скрол при анимациях
+   min-width: 320px
+   overflow-x: hidden
 
 .container
-   max-width: 1110px
+   max-width: 1920px
    margin: 0 auto
